@@ -4,8 +4,10 @@ header('Content-Type: application/json');
 include('connectSQL.php');
 $bar = isset($_POST['str']) ? $_POST['str'] : 'kusee';
 
-$fullQuery = 'SELECT  linkedcourse.ID AS Parent, parent.CODE as Parent_Code, parent.NAME AS Parent_Course, linkedcourse.LINKEDID AS Child, child.CODE AS Child_Code, child.NAME AS Child_Course 
-FROM linkedcourse JOIN course_shrinked parent ON linkedcourse.ID = parent.ID JOIN course_shrinked child ON linkedcourse.LINKEDID = child.ID WHERE parent.UNIT = "'.$bar.'" ORDER BY Parent.UNIT ASC';
+$fullQuery = 
+'SELECT  linkedcourse.ID AS Parent, parent.CODE as Parent_Code, parent.NAME AS Parent_Course, linkedcourse.LINKEDID AS Child, child.CODE AS Child_Code, child.NAME AS Child_Course 
+ FROM linkedcourse JOIN course_shrinked parent ON linkedcourse.ID = parent.ID JOIN course_shrinked child ON linkedcourse.LINKEDID = child.ID 
+ WHERE parent.UNIT = "'.$bar.'" ORDER BY Parent.UNIT ASC';
 $IDsFROM = array();
 $childrenIDsFROM = array();
 $courseNamesFROM = array();

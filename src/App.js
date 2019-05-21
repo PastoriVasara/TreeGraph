@@ -7,6 +7,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Drawtree from './drawtree.js';
 import NewField from './NewField.js';
+import CourseSelection from './courseSelection.js';
+import $ from 'jquery';
 
 
 
@@ -15,104 +17,149 @@ class App extends Component {
     super();
     this.state =
       {
+        initializedCourses: this.initializeCourses(), 
+        courses: this.courseArray(),
         unit: 'COMSTK',
         condition: 'AND',
-        currentID: 1,
-        fieldValues: [
+        specificUnits: [
           {
             id: 0,
             unit: 'COMSTK',
             condition: 'AND'
-          }]
+          }
+        ],
+        specificCourses: []
       };
+
   }
 
-  changevalue = (value) => {
-    this.setState({
-      unit: value.target.value
-    });
-    this.forceUpdate();
-  }
-  updateValues = (unit, condition, id) => {
-    //fix this shit
-    var newArray = [];
-    for(var i = 0; i < this.state.fieldValues.length; i++)
+  initializeCourses = () => 
+  {
+    var data =
     {
-      if(i == id)
-      {
-        newArray.push({
-          id: id,
-          unit: unit,
-          condition: condition
-        });
-      }
-      else
-      {
-        newArray.push(this.state.fieldValues[i]);
+      courses: 'all'
+    };
+    var courseList = [];
+    $.ajax({
+      type: 'POST',
+      url: "http://localhost/phpCall/call.php",
+      data: data,
+      success: function (data) {
+        courseList = data;
+      },
+      dataType: 'json',
+      async: false
+    });
+    return courseList;
+  }
+  courseArray = () => {
+    var data =
+    {
+      courses: 'all'
+    };
+    var courseList = [];
+    $.ajax({
+      type: 'POST',
+      url: "http://localhost/phpCall/call.php",
+      data: data,
+      success: function (data) {
+        var returnList = data;
+        for (var i = 0; i < returnList[0].length; i++) {
+          courseList.push("[" + returnList[1][i] + "] : " + returnList[0][i]);
+        }
+
+      },
+      dataType: 'json',
+      async: false
+    });
+    return courseList;
+  }
+
+  updateValues = (unit, condition, id) => {
+    for (var i = 0; i < this.state.specificUnits.length; i++) {
+      if
+        (this.state.specificUnits[i].id == id) {
+        this.state.specificUnits[i].unit = unit;
+        this.state.specificUnits[i].condition = condition;
       }
     }
     this.setState({
-      fieldValues: [],
       unit: unit,
       condition: condition
-    }, () => { this.setState({ fieldValues: newArray }); });
-    this.forceUpdate();
-    console.log(this.state.fieldValues);
-
+    });
   }
   addField = () => {
-    this.state.fieldValues.push(
+    var newID = this.state.specificUnits[this.state.specificUnits.length - 1].id + 1;
+    this.state.specificUnits.push(
       {
-        id: this.state.fieldValues.length,
+        id: newID,
         unit: 'COMSTK',
         condition: 'AND'
       }
     );
-    this.setState({ currentID: this.state.currentID + 1 });
     this.forceUpdate();
   }
   removeField = (id) => {
-    console.log(id);
     var updatedArray = [];
-    for (var i = 0; i < this.state.fieldValues.length; i++) {
-      if (this.state.fieldValues[i].id != id) {
+    for (var i = 0; i < this.state.specificUnits.length; i++) {
+      if (this.state.specificUnits[i].id != id) {
         updatedArray.push(
-          this.state.fieldValues[i]
+          this.state.specificUnits[i]
         );
       }
     }
     this.setState({
-      fieldValues: []
-    }, () => { this.setState({ fieldValues: updatedArray }); });
+      specificUnits: updatedArray
+    });
 
+  }
+  updateSelectedCourses = (value) =>
+  {
+    var updatedCourses = [];
+    for(var i = 0; i < value.length; i++)
+    {
+      updatedCourses.push(
+        {
+          name: this.state.initializedCourses[0][value[i].value],
+          code: this.state.initializedCourses[1][value[i].value]
+        });
+    }
+    this.setState({
+      specificCourses: updatedCourses
+    });
   }
 
   render() {
-
+    console.log(this.state.specificCourses);
     let field = [];
-    for (var i = 0; i < this.state.fieldValues.length; i++) {
+    for (var i = 0; i < this.state.specificUnits.length; i++) {
       field.push(<NewField
-        id={i}
         data={this.updateValues}
         add={this.addField}
         delete={this.removeField}
-        unit={this.state.fieldValues[i].unit}
-        condition={this.state.fieldValues[i].condition}
+        id={this.state.specificUnits[i].id}
+        unit={this.state.specificUnits[i].unit}
+        condition={this.state.specificUnits[i].condition}
       />);
     }
     return (
       <div className="App">
         <Drawtree
-          unit={this.state.unit}
-          condition={this.state.condition}
+          data={this.state.specificUnits}
         />
         <div>
+          
+          <CourseSelection
+            selectedCourses={this.updateSelectedCourses}
+            courses={this.state.courses} />
           <p>Tiedekunnat</p>
           <div style={{ height: '200px', overflowY: 'scroll' }}>
             {field}
           </div>
         </div>
+
       </div>
+
     );
   }
 }

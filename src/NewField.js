@@ -31,7 +31,7 @@ class NewField extends Component {
     }
     updateProperties = () =>
     {
-        this.props.data(this.state.unit,this.state.selector,this.state.id);
+        this.props.data(this.state.unit,this.state.selector,this.props.id);
 
     }
     addField = () => 
@@ -49,22 +49,19 @@ class NewField extends Component {
                 <InputLabel>Unit</InputLabel>
               
                     <Select
-                        style={{ margin: '10px' }}
-                        native
+                        style={{ margin: '10px' }}                       
                         onChange={this.handleChange('unit')}
-                        inputProps={{
-                            name: 'unit',
-                            id: 'age-native-simple',
-                        }}
+                        value = {this.state.unit}
+                        
                     >
-                        <option value={"COMSTK"}>COMSTK</option>
-                        <option value={"EDUTK"}>EDUTK</option>
-                        <option value={"JKKTK"}>JKKTK</option>
-                        <option value={"LANCE"}>LANCE</option>
-                        <option value={"LUOTK"}>LUOTK</option>
-                        <option value={"MEDTK"}>MEDTK</option>
-                        <option value={"SOCTK"}>SOCTK</option>
-                        <option value={"TUTKI"}>TUTKI</option>
+                        <MenuItem value={"COMSTK"}>COMSTK</MenuItem>
+                        <MenuItem value={"EDUTK"}>EDUTK</MenuItem>
+                        <MenuItem value={"JKKTK"}>JKKTK</MenuItem>
+                        <MenuItem value={"LANCE"}>LANCE</MenuItem>
+                        <MenuItem value={"LUOTK"}>LUOTK</MenuItem>
+                        <MenuItem value={"MEDTK"}>MEDTK</MenuItem>
+                        <MenuItem value={"SOCTK"}>SOCTK</MenuItem>
+                        <MenuItem value={"TUTKI"}>TUTKI</MenuItem>
                     </Select>
                
 
