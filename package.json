@@ -1,5 +1,6 @@
 {
   "name": "coursetree",
+  "homepage": "https://treecourse.kallu.fi/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
