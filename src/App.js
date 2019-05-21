@@ -21,6 +21,7 @@ class App extends Component {
         courses: this.courseArray(),
         unit: 'COMSTK',
         condition: 'AND',
+        moro: 'eksdee',
         specificUnits: [
           {
             id: 0,
