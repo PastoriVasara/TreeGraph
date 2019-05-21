@@ -20,7 +20,7 @@ class App extends Component {
         initializedCourses: this.initializeCourses(), 
         courses: this.courseArray(),
         unit: 'COMSTK',
-        condition: 'AND',
+        condition: 'ANDy',
         specificUnits: [
           {
             id: 0,
