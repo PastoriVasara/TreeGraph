@@ -42,7 +42,7 @@ class App extends Component {
     var courseList = [];
     $.ajax({
       type: 'POST',
-      url: "http://localhost/phpCall/call.php",
+      url: "https://request.kallu.fi/index.php",
       data: data,
       success: function (data) {
         courseList = data;
@@ -60,7 +60,7 @@ class App extends Component {
     var courseList = [];
     $.ajax({
       type: 'POST',
-      url: "http://localhost/phpCall/call.php",
+      url: "https://request.kallu.fi/index.php",
       data: data,
       success: function (data) {
         var returnList = data;

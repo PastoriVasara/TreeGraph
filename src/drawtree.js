@@ -35,8 +35,9 @@ export default class Drawtree extends React.Component {
             unit: text,
             condition: this.props.data[0].condition
         };
-        $.post("http://localhost/phpCall/call.php", data, function (data) {
+        $.post("https://request.kallu.fi/index.php", data, function (data) {
             //new D3 graph
+            console.log(data);
             var g = new dagreD3.graphlib.Graph().setGraph({});
 
             var nodes = [];
