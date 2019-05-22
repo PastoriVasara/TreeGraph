@@ -6,21 +6,31 @@ import * as dagreD3 from "dagre-d3";
 export default class Drawtree extends React.Component {
     constructor() {
         super();
+        this.state =
+      {
+          givenContents: []
+      }
         this.svg = null;
         this.g = null;
     }
     //when initialized
     componentDidMount() {
-        this.drawing();
     }
     //don't draw again if the parameters are the same
-    componentDidUpdate(prevProps, prevState) {
-            this.drawing();
-    }
 
+    componentDidUpdate(prevProps, prevState) {
+
+        if(JSON.stringify(this.state.givenContents) !== JSON.stringify(this.props.contents)){
+            console.log("erit");
+            this.drawing();
+            this.setState({
+                givenContents: this.props.contents
+            });
+        }
+    }
+    
 
     drawing() {
-
         function calculateWidth(string)
         {
            var spaces = "";
@@ -30,20 +40,26 @@ export default class Drawtree extends React.Component {
            } 
            return spaces;
         }
-        var text = this.props.data[0].unit;
-        var data = {
+        var text = this.props.contents.units[0].unit;
+        var courses = this.props.contents.courses;
+        console.log(courses);
+        var contents = {
             unit: text,
-            condition: this.props.data[0].condition
+            condition: this.props.contents.units[0].condition
         };
-        $.post("https://request.kallu.fi/index.php", data, function (data) {
+        $.ajax({
+            type: 'POST',
+            url: "https://request.kallu.fi/index.php",
+            data: contents,
+            success: function (contents) {
             //new D3 graph
-            console.log(data);
+            console.log(contents);
             var g = new dagreD3.graphlib.Graph().setGraph({});
 
             var nodes = [];
             var blacklist = [];
             /*
-            Returned Data:
+            Returned contents:
 
              0 = Parent ID 
              1 = Parent Course Short
@@ -56,29 +72,29 @@ export default class Drawtree extends React.Component {
             
 
             //Make every course into a node
-            for (var i = 0; i < data[0].length; i++) {
-                if (data[0][i] != data[3][i]) {
-                    if (!nodes.includes(data[0][i])) {
-                        nodes.push(data[0][i]);
+            for (var i = 0; i < contents[0].length; i++) {
+                if (contents[0][i] != contents[3][i]) {
+                    if (!nodes.includes(contents[0][i])) {
+                        nodes.push(contents[0][i]);
 
-                        g.setNode(data[0][i], {
-                            label:  calculateWidth(data[2][i]) + "[" + data[1][i] + "] \n"  +  data[2][i]
+                        g.setNode(contents[0][i], {
+                            label:  calculateWidth(contents[2][i]) + "[" + contents[1][i] + "] \n"  +  contents[2][i]
                         });
                     }
-                    if (!nodes.includes(data[3][i])) {
+                    if (!nodes.includes(contents[3][i])) {
 
-                        nodes.push(data[3][i]);
-                        g.setNode(data[3][i], {
-                            label: calculateWidth(data[5][i]) + "[" + data[4][i] + "] \n" + data[5][i]
+                        nodes.push(contents[3][i]);
+                        g.setNode(contents[3][i], {
+                            label: calculateWidth(contents[5][i]) + "[" + contents[4][i] + "] \n" + contents[5][i]
                         });
                     }
                 }
 
             }
             //Connect parent nodes to child nodes with a line
-            for (var i = 0; i < data[0].length; i++) {
-                if (!blacklist.includes(i) && data[3][i] != data[0][i]) {
-                    g.setEdge(data[3][i], data[0][i], {
+            for (var i = 0; i < contents[0].length; i++) {
+                if (!blacklist.includes(i) && contents[3][i] != contents[0][i]) {
+                    g.setEdge(contents[3][i], contents[0][i], {
                         label: ""
                     });
                 }
@@ -109,8 +125,13 @@ export default class Drawtree extends React.Component {
             // Center the graph
             var initialScale = 1;
             svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+            console.log("???");
 
-        }, "json");
+
+        }, 
+        contentsType: 'json',
+        async: false
+      });
         
     }
 

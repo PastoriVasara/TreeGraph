@@ -28,7 +28,8 @@ class App extends Component {
             condition: 'AND'
           }
         ],
-        specificCourses: []
+        specificCourses: [],
+        canvasContent: []
       };
 
   }
@@ -73,6 +74,21 @@ class App extends Component {
       async: false
     });
     return courseList;
+  }
+  compileFields = () => 
+  {
+    var fieldCombiner = [];
+    var unitField = $.extend(true, {}, this.state.specificUnits);
+    var courseField = $.extend(true, {}, this.state.specificCourses);
+    fieldCombiner = 
+    {
+      units: unitField,
+      courses: courseField
+    };
+    this.setState({
+      canvasContent: fieldCombiner
+    });
+ 
   }
 
   updateValues = (unit, condition, id) => {
@@ -130,7 +146,7 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.specificCourses);
+    console.log(this.state.canvasContent);
     let field = [];
     for (var i = 0; i < this.state.specificUnits.length; i++) {
       field.push(<NewField
@@ -144,11 +160,12 @@ class App extends Component {
     }
     return (
       <div className="App">
+        
         <Drawtree
-          data={this.state.specificUnits}
+        contents={this.state.canvasContent}
         />
         <div>
-          
+        <p>Kurssit</p>
           <CourseSelection
             selectedCourses={this.updateSelectedCourses}
             courses={this.state.courses} />
@@ -157,7 +174,7 @@ class App extends Component {
             {field}
           </div>
         </div>
-
+        <Button onClick ={(e,v) => {this.compileFields()}}> Lähetä</Button>
       </div>
 
     );
