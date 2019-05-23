@@ -42,21 +42,22 @@ export default class Drawtree extends React.Component {
         }
         var text = [];
         var conditions =[];
-        for(var i = 0; i < this.props.contents.units.length; i++)
+        console.log(); 
+        for(var i = 0; i < Object.keys(this.props.contents.units).length; i++)
         {
+
             text.push(this.props.contents.units[i].unit);
             conditions.push(this.props.contents.units[i].condition);
         }
-        var text = this.props.contents.units[0].unit;
-        var courses = this.props.contents.courses;
-        console.log(courses);
+        console.log(conditions);
         var contents = {
             unit: text,
             condition: conditions
         };
         $.ajax({
             type: 'POST',
-            url: "https://request.kallu.fi/call.php",
+            //url: "https://request.kallu.fi/call.php",
+            url: "http://localhost/phpCall/call.php",
             data: contents,
             success: function (contents) {
             //new D3 graph
