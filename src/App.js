@@ -52,6 +52,7 @@ class App extends Component {
   }
 
   initializeCourses = () => {
+    console.log("-1");
     var data =
     {
       courses: 'all'
@@ -63,6 +64,7 @@ class App extends Component {
       //url: "http://localhost/phpCall/call.php",
       data: data,
       success: function (data) {
+        console.log("0");
         courseList = data;
       },
       dataType: 'json',
@@ -77,12 +79,14 @@ class App extends Component {
       courses: 'all'
     };
     var courseList = [];
+    console.log("1");
     $.ajax({
       type: 'POST',
       url: "https://request.kallu.fi/call.php",
       //url: "http://localhost/phpCall/call.php",
       data: data,
       success: function (data) {
+        console.log("2");
         var returnList = data;
         for (var i = 0; i < returnList[0].length; i++) {
           courseList.push("[" + returnList[1][i] + "] : " + returnList[0][i]);
