@@ -1,0 +1,30 @@
+
+g.specific > rect {
+    fill: #00ffd0;
+  }
+g.generic > rect {
+    fill: #b3ff00;
+}
+g.hovering > rect {
+  fill: rgb(197, 220, 238);
+  transform: scale(1.05);
+  cursor:pointer;
+}
+.zoomIn
+{
+  cursor:pointer;
+}
+:local(.treeSVG)
+{
+  margin-top: 1%;
+  background-color: rgb(243, 240, 240);
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 3px;
+  border-color: rgb(248, 246, 242);
+  
+  -webkit-box-shadow: 5px 7px 6px -1px rgba(0,0,0,0.47);
+  -moz-box-shadow: 5px 7px 6px -1px rgba(0,0,0,0.47);
+  box-shadow: 5px 7px 6px -1px rgba(0,0,0,0.47);
+
+}

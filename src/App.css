@@ -1,5 +1,12 @@
 .App {
   text-align: center;
+  min-height: 100vh; 
+  background: url("images/school.png");
+}
+
+:local(.bg)
+{
+  height: 100vh;
 }
 
 .App-logo {
@@ -16,7 +23,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -31,17 +38,91 @@
     transform: rotate(360deg);
   }
 }
-    body {
-        font: 300 14px 'Helvetica Neue', Helvetica;
-    }
 
+    body {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        text-transform: uppercase;
+        color: black;   
+    }
     .node rect {
-        stroke: #333;
+        stroke: rgb(10, 12, 11);
         fill: #fff;
     }
-
+    p
+    {
+      font-weight: 500;
+      color:black;
+      margin: 3%;
+      font-size: 26px; 
+    }
     .edgePath path {
         stroke: #333;
         fill: #333;
         stroke-width: 1.5px;
     }
+    :local(.optionSection)
+    {
+      display: flex;
+      
+    }
+    :local(.sectionRight)
+    {
+      /*flex: 1;*/
+      margin: 1% 2%;
+      padding: 1% 1%;
+      
+    }
+    :local(.sectionLeft)
+    {
+      /*flex: 0 0 30%;
+      float: left;*/
+      margin: 1% 2%;
+      padding: 0.5% 1%;
+      background: rgb(241, 241, 241);
+      border-radius: 7px;
+      
+      -webkit-box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+      -moz-box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+      box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+    }
+    :local(.treeRight)
+    {
+      flex: 0 0 40%;
+      
+      margin: 3% 1%;
+      padding: 0 1%;
+    }
+    :local(.treeLeft)
+    {
+      flex: 1;
+      float: left;
+      margin: 1% 2%;
+    }
+    :local(.paperSection)
+    {
+      background-color: rgb(237, 237, 237);
+    }
+    :local(.siteHeader)
+    {
+      margin-top: 5%;
+      padding-bottom: 5%;
+      font-size: 100px;
+      text-transform: uppercase;
+      color: rgb(250, 146, 61);
+      text-shadow: 3px 3px rgb(170, 99, 41);
+    }
+    :local(.rightBack)
+    {
+      margin: 5% 2%;
+      padding: 0.5% 1%;
+      background: rgb(241, 241, 241);
+      border-radius: 7px;
+      
+      -webkit-box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+      -moz-box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+      box-shadow: 3px 8px 9px -3px rgba(0,0,0,0.49);
+    }
+    
+

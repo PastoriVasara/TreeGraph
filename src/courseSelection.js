@@ -1,44 +1,85 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 import Select from 'react-select';
-import Button from '@material-ui/core/Button';
 
 class courseSelection extends Component {
     constructor() {
         super();
         this.state =
             {
-                courses: []
+                courses: [],
+                value: []
             };
     }
-    componentDidMount = () =>
-    {
+
+    componentDidMount = () => {
         this.setState({
-            courses: this.inititializeDropdown()
+            courses: this.inititializeDropdown(),
+            value: []
         });
     }
-    inititializeDropdown = () =>
-    {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.updatedCourse != this.props.updatedCourse) {
+            //updatedCourse
+            var noUndefineds = true;
+            for (var i = 0; i < this.props.updatedCourse.length; i++) {
+                if (this.props.updatedCourse[i].value == undefined) {
+                    noUndefineds = false;
+                }
+
+            }
+            if (noUndefineds) {
+                this.clickUpdate(this.props.updatedCourse);
+            }
+        }
+    }
+    inititializeDropdown = () => {
         var dropDown = [];
         var courses = this.props.courses;
-        for(var i = 0; i < courses.length; i++)
-        {
-            dropDown.push({label: courses[i], value: i});
+        for (var i = 0; i < courses.length; i++) {
+            dropDown.push({ label: courses[i], value: i });
         }
         return dropDown;
     }
-    updateValues = (values) =>
-    {
+    checkValue = (newValue) => {
+        var dropDown = this.state.value;
+        dropDown.push({ label: newValue.value, value: newValue.value });
+        this.setState({
+            value: dropDown
+        });
+    }
+    clickUpdate = (values) => {
+        var dropDown = this.state.value;
+        for (var i = 0; i < values.length; i++) {
+            var canBeAdded = true;
+            for (var j = 0; j < this.state.value.length; j++) {
+                if (this.state.value[j].value == values[i].value) {
+                    canBeAdded = false;
+                }
+            }
+            if (canBeAdded) {
+                dropDown.push(values[i]);
+            }
+        }
+        this.setState({
+            value: dropDown
+        });
+        this.forceUpdate();
+    }
+
+    updateValues = (values) => {
         this.props.selectedCourses(values);
     }
     render() {
         return (
             <div>
-            <Select 
-            isMulti={true} 
-            options={this.state.courses}
-            onChange={(e,v) => {this.updateValues(e)}}
-/>
+                <Select
+                    autoload={true}
+                    isMulti={true}
+                    options={this.state.courses}
+                    value={this.state.value}
+                    key={JSON.stringify(this.state.value)}
+                    onChange={(e, v) => { this.updateValues(e) }}
+                />
             </div>
         );
     }
