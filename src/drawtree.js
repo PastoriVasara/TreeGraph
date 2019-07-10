@@ -59,8 +59,8 @@ export default class Drawtree extends React.Component {
         var givenData = [];
         $.ajax({
             type: 'POST',
-            //url: "https://request.kallu.fi/call.php",
-            url: "http://localhost/phpCall/call.php",
+            url: "https://request.kallu.fi/call.php",
+            //url: "http://localhost/phpCall/call.php",
             data: contents,
             success: function (contents) {
                 var returnedData = contents;
