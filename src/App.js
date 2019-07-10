@@ -194,6 +194,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("?");
     let field = [];
     for (var i = 0; i < this.state.specificUnits.length; i++) {
       field.push(<NewField
@@ -206,6 +207,7 @@ class App extends Component {
       />);
     }
     return (
+      
       <MuiThemeProvider theme={theme}>
       <div className="App">
         <div className={styles.optionSection}>
