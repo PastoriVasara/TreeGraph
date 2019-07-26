@@ -12,7 +12,8 @@ class NewField extends Component {
         super();
         this.state =
             {
-                unit: ''
+                unit: '',
+                amount: 0
             };
     }
 
@@ -20,10 +21,20 @@ class NewField extends Component {
         this.setState({ [name]: event.target.value }, () => {this.updateProperties(); });             
     }
     componentDidMount() {
+        console.log("mounted");
         this.setState({
-            unit: this.props.unit
+            unit: this.props.unit,
         });
         this.forceUpdate();
+    }
+    componentDidUpdate(prevProps, prevState)
+    {
+       if(prevProps.unit != this.props.unit)
+       {
+           this.setState({
+            unit: this.props.unit
+           });
+       }
     }
     updateProperties = () =>
     {
@@ -33,10 +44,16 @@ class NewField extends Component {
     addField = () => 
     {
         this.props.add();
+        this.setState({
+            amount: this.state.amount+1
+        });
     }
     deleteField = () =>
     {
         this.props.delete(this.props.id);
+        this.setState({
+            amount: this.state.amount-1
+        });
     }
     render() {
         return (
@@ -44,13 +61,10 @@ class NewField extends Component {
             <FormControl
                 variant="filled"
                 style={{ flexDirection: 'row', marginLeft: '50px' }}>
-                <InputLabel>Unit</InputLabel>
-              
                     <Select
                         style={{ margin: '15px' }}                       
                         onChange={this.handleChange('unit')}
-                        value = {this.state.unit}
-                        
+                        value = {this.state.unit}                     
                     >
                         <MenuItem key={"COMSTK"} value={"COMSTK"}>COMSTK</MenuItem>
                         <MenuItem key={"EDUTK"} value={"EDUTK"}>EDUTK</MenuItem>
@@ -74,7 +88,7 @@ class NewField extends Component {
                     >
                     
                     <AddIcon />
-                </Fab>{/*
+                </Fab>
                 <Fab
                     style={{marginLeft:'5px'}}
                     size="small"
@@ -82,7 +96,7 @@ class NewField extends Component {
                     onClick = {(e,v) => {this.deleteField()}}
                     >                   
                     <DeleteIcon />
-                </Fab>*/}
+                </Fab>
                 
             </FormControl>
         </div>

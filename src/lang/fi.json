@@ -1,0 +1,11 @@
+{
+    "site_header": "Kurssipuu",
+    "unit_header": "Tiedekunnat",
+    "unit_child": "Tiedekunta",
+    "course_header": "Kurssit",
+    "button_send": "Lähetä",
+    "button_undo": "Peruuta",
+    "button_redo": "Tee Uudelleen",
+    "graph_hint": "Liiku kurrsista toiseen nuolinäppäimillä!"
+}
+  

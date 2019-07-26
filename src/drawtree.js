@@ -1,22 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
 import * as d3 from "d3";
 import $ from 'jquery';
 import * as dagreD3 from "dagre-d3";
 import styles from  './treeStyle.css';
 
-export default class Drawtree extends React.Component {
+export default class Drawtree extends Component {
     constructor() {
         super();
         this.state =
             {
                 givenContents: [],
-                location : this
+                location : this,
+                testIterator : -1,
+                orderedNodes: []
             }
         this.svg = null;
         this.g = null;
+        this.drawer = null;
+
     }
+    _handleNVEvent = event => {
+        if(this.svg != null && this.state.orderedNodes != null && (event.keyCode === 37 || event.keyCode === 39))
+        {   
+
+            event.preventDefault();
+            var currentNode = this.state.testIterator + (event.keyCode === 39 ? 1 : -1);
+            if(currentNode >= 0 && currentNode < this.state.orderedNodes.length){   
+            var scaleLevel = 0.75;
+            var g = this.drawer;
+            var xCoordinate =g.node(this.state.orderedNodes[currentNode].name).x;
+            var yCoordinate =g.node(this.state.orderedNodes[currentNode].name).y;
+            var svg = d3.select("svg"),
+                inner = svg.select("g");
+                
+            var zoom = d3.zoom()
+            .on("zoom", function () {
+                inner.attr("transform", d3.event.transform);
+            });
+            var xTranslated = -xCoordinate*scaleLevel +(svg.attr("width")/2);
+            var yTranslated = -yCoordinate*scaleLevel +(svg.attr("height")/2);
+            svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(xTranslated,yTranslated).scale(scaleLevel));
+            this.setState({
+                testIterator: currentNode
+            });
+            }
+            //svg.call(zoom.transform, d3.zoomIdentity.translate(0, (svg.attr("height") - g.graph().height * scaleLevel) / 2).scale(scaleLevel));
+        }
+    };
     //when initialized
     componentDidMount() {
+        document.addEventListener('keydown', this._handleNVEvent);
+        this.drawer = new dagreD3.graphlib.Graph().setGraph({});
     }
     //don't draw again if the parameters are the same
     componentDidUpdate(prevProps, prevState) {
@@ -76,7 +110,8 @@ export default class Drawtree extends React.Component {
             
         });
                 //new D3 graph
-                var g = new dagreD3.graphlib.Graph().setGraph({});
+                var g = this.drawer;
+                //var g = new dagreD3.graphlib.Graph().setGraph({});
                 var nodes = [];
                 /*
                 Returned contents:
@@ -174,7 +209,6 @@ export default class Drawtree extends React.Component {
                 var binder = this;
                 // Center the graph
                 var initialScale = 0.65;
-                //svg.call(zoom.transform, d3.zoomIdentity.translate(0,0).scale(initialScale));
                 if(specifiedCourses.length > 0)
                 {
                     var xCoordinate =g.node(specifiedCourses[specifiedCourses.length-1].id).x;
@@ -189,17 +223,19 @@ export default class Drawtree extends React.Component {
 
                     
                 }
-                //svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+                else
+                {
+                    initialScale = 0.3;
+                    svg.call(zoom.transform, d3.zoomIdentity.translate(0, (svg.attr("height") - g.graph().height * initialScale) / 2).scale(initialScale));
+                }
+                //
                 svg.selectAll("g.node").on("click", function(id)
-                { 
-                    
-                    var clickedNode = g.node(id);
-                    
+                {                 
+                    var clickedNode = g.node(id);                  
                     binder.updateValues(clickedNode.id);
                 });
                 svg.selectAll("g.node").on("mouseover", function(id)
-                {  
-                    
+                {                    
                     this.childNodes[1].childNodes[0].className.baseVal = "zoomIn";
                     this.className.baseVal = "node hovering";
                 });
@@ -215,23 +251,41 @@ export default class Drawtree extends React.Component {
                         this.className.baseVal ="node generic";
                     }
                 });
+
+                var nodesInOrder = [];
+                for(i = 0; i < g.nodes().length; i++)
+                {
+                    var currentNode =g.node(g.nodes()[i]);
+                    nodesInOrder.push({
+                        name: currentNode.id,
+                        distance: Math.sqrt(Math.pow(currentNode.x,2)+Math.pow(currentNode.y,2))
+                    });
+                }
+                nodesInOrder.sort((a, b) => (a.distance > b.distance) ? 1 : -1);
+                this.setState({
+                    orderedNodes: nodesInOrder
+                });
+
     }
     updateValues = (values) =>
     {
        this.props.courseAdd(values);
     }
     render() {
-
+                var Info = "";
+                if(this.props.drawn)
+                {
+                    Info = this.props.language.graph_hint;
+                }
         return (
+            <div>
             <svg width="1000" height="700"
             className={styles.treeSVG}
-                ref={(el) => { this.svg = el; }}
-            >
-                <g
-                    ref={(el) => { this.g = el; }}
-                /></svg>
-
-
+                ref={(el) => { this.svg = el; }}>
+                <g ref={(el) => { this.g = el; }}/>
+                    </svg>
+                    <div className ={styles.GraphInfo}>{Info}</div>
+                    </div>   
         )
     };
 
