@@ -68,7 +68,7 @@ class courseSelection extends Component {
         return dropDown;
     }
     clickUpdate = (addedCourse) => {
-        var coursesFromGraph = this.state.value;
+        var coursesFromGraph = [...this.state.value];
         for(var i = 0; i < addedCourse.length; i++)
         {
             var canBeAdded = true;

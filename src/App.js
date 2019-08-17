@@ -217,7 +217,7 @@ class App extends Component {
   addToCourses = (value) => {
     console.log(this.state.specificCourses);
     var canBeAdded = true;
-    var specificCoursesToAdd = this.state.specificCourses;
+    var specificCoursesToAdd = [...this.state.specificCourses];
     for (var i = 0; i < specificCoursesToAdd.length; i++) {
       if (specificCoursesToAdd[i].code === value) {
         canBeAdded = false;
