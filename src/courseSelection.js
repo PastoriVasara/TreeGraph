@@ -11,12 +11,15 @@ class courseSelection extends Component {
             };
     }
 
+    //on mounting initialize all the selectable courses
     componentDidMount = () => {
         this.setState({
             courses: this.inititializeDropdown(),
             value: []
         });
     }
+
+    //when component updates e.g course is clicked from tree, add it to the dropdown
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.updatedCourse !== this.props.updatedCourse && this.props.updatedCourse.length > 0) { 
             //updatedCourse
@@ -36,9 +39,9 @@ class courseSelection extends Component {
             this.restoreCourses();
         }
     }
+    //undo functionality via the main component through undo property
     restoreCourses = () => 
     {
-        console.log(this.props.undo);
         var newState = [];
         for(var i = 0; i < this.props.undo.length; i++)
         {
@@ -55,6 +58,7 @@ class courseSelection extends Component {
             value: newState
         });
     }
+    //initialization of the dropdown course selection
     inititializeDropdown = () => {
         var dropDown = [];
         var courses = this.props.courses;
@@ -67,6 +71,7 @@ class courseSelection extends Component {
         }
         return dropDown;
     }
+    //if course is clicked from the tree view add it to the dropdown
     clickUpdate = (addedCourse) => {
         var coursesFromGraph = [...this.state.value];
         for(var i = 0; i < addedCourse.length; i++)
@@ -76,6 +81,7 @@ class courseSelection extends Component {
                 if(coursesFromGraph[j] === this.state.courses[addedCourse[i]])
                 {
                     canBeAdded = false;
+                    break;
                 }
             }
             if(canBeAdded){
@@ -87,7 +93,7 @@ class courseSelection extends Component {
         });
         this.props.emptyField();
     }
-
+    //update the selected courses
     updateValues = (values) => {
         console.log(this.state.value);
         this.props.selectedCourses(values);

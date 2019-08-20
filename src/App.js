@@ -44,25 +44,21 @@ class App extends Component {
       };
 
   }
-
+  //helper function for storing an undo operation
   logUndoState = () => {
-
     return {
       units: this.state.specificUnits,
       courses: this.state.specificCourses,
       language: this.state.language,
     }
   }
-
+  //helper function for undoing and redoing
   rollBackState = (restoreValues) => {
-    console.log(restoreValues);
     this.setState({
       specificUnits: restoreValues.units,
       specificCourses: restoreValues.courses,
       language: restoreValues.language,
     }, () => this.forceUpdate());
-    console.log(this.state.specificCourses);
-    
   }
 
   addToPastStates = () => {
@@ -71,11 +67,12 @@ class App extends Component {
       futureStates: []
     });
   }
+
+  //undo an action
   undo = () => {
     if (this.state.pastStates.length > 0) {
       const currentState = this.state.pastStates.pop();
       const previousState = this.state.pastStates;
-      console.log();
       const futureState = this.state.futureStates.concat([this.logUndoState()]);
       this.rollBackState(currentState);
       this.setState({
@@ -84,9 +81,10 @@ class App extends Component {
         CourseSelectionUndo: currentState.courses
       });
       this.forceUpdate();
-      console.log(this.state.specificCourses);
     }
   }
+
+  //redo an action
   redo = () => {
     if (this.state.futureStates.length > 0) {
       const previousState = this.state.pastStates.concat([this.logUndoState()]);
@@ -108,6 +106,7 @@ class App extends Component {
       courses: 'all'
     };
     var courseList = [];
+    //connect to the SQL server for getting all courses to select from
     $.ajax({
       type: 'POST',
       url: "https://request.kallu.fi/call.php",
@@ -121,10 +120,11 @@ class App extends Component {
     return courseList;
   }
 
+  //combine course field and unit field for sending to the component which draws the tree
   compileFields = () => {
     var fieldCombiner = [];
-    var unitField = $.extend(true, {}, this.state.specificUnits);
-    var courseField = $.extend(true, {}, this.state.specificCourses);
+    var unitField = { ...this.state.specificUnits };
+    var courseField = { ...this.state.specificCourses };
     fieldCombiner =
       {
         units: unitField,
@@ -141,9 +141,8 @@ class App extends Component {
   }
 
 
-
+  //update values of the courses
   updateValues = (unit, id) => {
-    console.log(this.state.specificUnits);
 
     this.addToPastStates();
     var updatedArray = [];
@@ -167,6 +166,7 @@ class App extends Component {
       specificUnits: updatedArray
     });
   }
+  //add a new unit field
   addField = () => {
     this.addToPastStates();
 
@@ -175,6 +175,8 @@ class App extends Component {
       incrementingID: this.state.incrementingID + 1
     })
   }
+
+  //remove selected unit field
   removeField = (id) => {
     this.addToPastStates();
     var updatedArray = [];
@@ -190,9 +192,9 @@ class App extends Component {
     });
 
   }
+  //if the value of selected course/unit is change update it for drawing
   updateSelectedCourses = (value) => {
     this.addToPastStates();
-    console.log(this.state.specificCourses);
     var updatedCourses = [];
     var graphTreeChecker = this.state.feedBackArray;
     for (var i = 0; i < value.length; i++) {
@@ -214,24 +216,24 @@ class App extends Component {
       feedBackArray: graphTreeChecker
     })
   }
+
+  //add selected courses the the selected course state for drawing
   addToCourses = (value) => {
-    console.log(this.state.specificCourses);
     var canBeAdded = true;
+
+    //spread operator for fixing immutability issues
     var specificCoursesToAdd = [...this.state.specificCourses];
     for (var i = 0; i < specificCoursesToAdd.length; i++) {
       if (specificCoursesToAdd[i].code === value) {
         canBeAdded = false;
       }
     }
-    
+
     if (canBeAdded) {
-      console.log(value);
-      console.log(this.state.specificCourses);
-      console.log(specificCoursesToAdd);
       this.addToPastStates();
       var allCourses = this.state.initializedCourses;
       var postToCourseSelection = [];
-      for (var i = 0; i < allCourses[2].length; i++) {
+      for (i = 0; i < allCourses[2].length; i++) {
         if (allCourses[2][i] === value) {
           postToCourseSelection.push(i);
           specificCoursesToAdd.push({
@@ -242,7 +244,6 @@ class App extends Component {
 
         }
       }
-      console.log(specificCoursesToAdd.length);
       this.setState({
         feedBackArray: postToCourseSelection,
         specificCourses: specificCoursesToAdd
@@ -250,20 +251,18 @@ class App extends Component {
     }
   }
   ClearFeedBack = () => {
-    console.log("speedtest?");
     this.setState({
       feedBackArray: []
     });
     this.compileFields();
-    
+
   }
 
   render() {
     let field = [];
-    console.log(this.state.specificUnits);
+
     if (this.state.specificUnits.length > 0) {
       for (var i = 0; i < this.state.specificUnits.length; i++) {
-        console.log("rebuild");
         field.push(
           <NewField
             key={this.state.specificUnits[i].id}
